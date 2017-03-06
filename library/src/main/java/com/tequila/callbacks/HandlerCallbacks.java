@@ -2,7 +2,6 @@ package com.tequila.callbacks;
 
 import android.os.Handler;
 import android.os.Message;
-
 import com.tequila.NetworkStatus;
 import com.tequila.net.NetworkParam;
 
@@ -82,7 +81,7 @@ public class HandlerCallbacks {
                     case NetworkStatus.NET_ERROR:
                         synchronized (this){
                             if(networkListener!=null){
-                                networkListener.onNetworkError(param);
+                                networkListener.onError(param);
                             }
                         }
                         break;

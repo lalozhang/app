@@ -1,8 +1,6 @@
 package com.tequila.model;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-
 import java.io.Serializable;
 
 /**
@@ -10,8 +8,6 @@ import java.io.Serializable;
  */
 
 public class BaseParam implements Serializable{
-
-
 
     public String hashKey(){
         String cacheKey = null;
