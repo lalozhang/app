@@ -4,6 +4,7 @@ import android.os.Handler;
 import android.os.Message;
 import com.alibaba.fastjson.JSON;
 import com.tequila.NetworkStatus;
+import com.tequila.cache.ResponseMemCache;
 import com.tequila.model.BaseResult;
 import com.tequila.net.NetworkParam;
 import com.tequila.util.ErrorCode;
@@ -56,9 +57,8 @@ public class NetworkCallback implements okhttp3.Callback{
                             mHandler.sendMessage(msg);
                         }
 
-                        //TODO 将result添加到内存
                         if(param.memCache){//可以缓存到内存
-
+                            ResponseMemCache.put(param,result);
                         }
 
                         //TODO 将result添加到磁盘
