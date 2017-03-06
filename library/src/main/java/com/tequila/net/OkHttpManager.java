@@ -7,8 +7,10 @@ import com.tequila.AddType;
 import com.tequila.IServiceMap;
 import com.tequila.NetworkStatus;
 import com.tequila.RequestType;
+import com.tequila.cache.ResponseMemCache;
 import com.tequila.callbacks.NetworkCallback;
 import com.tequila.model.BaseParam;
+import com.tequila.model.BaseResult;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -145,7 +147,22 @@ public class OkHttpManager {
             Iterator<NetworkTask> listSequenceIterator = listSequence.iterator();
             while (listSequenceIterator.hasNext()){
                 NetworkTask task = listSequenceIterator.next();
-                newCallByRequestType(task);
+                //TODO 如果有内存缓存
+                if(task.param.memCache&& ResponseMemCache.containsKey(task.param)){
+                    BaseResult result = ResponseMemCache.get(task.param);
+                    if(task.handler!=null&&result!=null){
+                        task.param.setResult(result);
+                        Message msg = task.handler.obtainMessage(NetworkStatus.NET_COMPLETE, task.param);
+                        task.handler.sendMessage(msg);
+                    }
+                }else{
+                    //TODO 如果diskCache 如果可以disk缓存且有缓存
+                    if(task.param.diskCache){
+
+                    }
+                    newCallByRequestType(task);
+                }
+
                 listSequenceIterator.remove();
             }
         }
@@ -226,11 +243,7 @@ public class OkHttpManager {
 
 
     public void cancelAll(){
-        Iterator<NetworkTask> itt = listSequence.iterator();
-        while (itt.hasNext()){
-            itt.remove();
-        }
-
+        listSequence.clear();
         List<Call> runningCalls = okHttpClient.dispatcher().runningCalls();
         for (Call runCall:runningCalls){
             runCall.cancel();
@@ -274,7 +287,11 @@ public class OkHttpManager {
 
     }
 
-
-
+    public void destroy() {
+        if (singleInstance != null) {
+            singleInstance.cancelAll();
+        }
+        singleInstance = null;
+    }
 
 }

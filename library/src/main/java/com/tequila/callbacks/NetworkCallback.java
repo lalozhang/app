@@ -50,6 +50,14 @@ public class NetworkCallback implements okhttp3.Callback{
                             Message msg = mHandler.obtainMessage(NetworkStatus.NET_COMPLETE, param);
                             mHandler.sendMessage(msg);
                         }
+
+                        if(param.memCache){//可以缓存到内存
+
+                        }
+
+                        if(param.diskCache){//可以缓存到磁盘
+
+                        }
                     }else{
                         //server error
                         if(mHandler!=null){

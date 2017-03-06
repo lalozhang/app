@@ -15,4 +15,6 @@ public interface NetworkListener {
     void onNetworkComplete(NetworkParam param);
 
     void onNetworkError(NetworkParam param);
+
+    void onCache(NetworkParam param);
 }

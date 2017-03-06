@@ -2,6 +2,8 @@ package com.tequila.callbacks;
 
 import android.os.Handler;
 import android.os.Message;
+
+import com.tequila.NetworkStatus;
 import com.tequila.net.NetworkParam;
 
 /**
@@ -59,8 +61,39 @@ public class HandlerCallbacks {
         public boolean handleMessage(Message message) {
             if(message.obj instanceof NetworkParam){
                 int what = message.what;
+                NetworkParam param = (NetworkParam) message.obj;
                 switch (what){
+                    case NetworkStatus.NET_START:
+                        synchronized (this){
+                            if(networkListener!=null){
+                                networkListener.onNetworkStart(param);
+                            }
+                        }
 
+                        break;
+                    case NetworkStatus.NET_COMPLETE:
+                        synchronized (this){
+                            if(networkListener!=null){
+                                networkListener.onNetworkComplete(param);
+                            }
+                        }
+
+                        break;
+                    case NetworkStatus.NET_ERROR:
+                        synchronized (this){
+                            if(networkListener!=null){
+                                networkListener.onNetworkError(param);
+                            }
+                        }
+                        break;
+                    case NetworkStatus.CACHE_HIT:
+                        synchronized (this){
+                            if(networkListener!=null){
+                                networkListener.onCache(param);
+                            }
+                        }
+
+                        break;
 
                     default:
                         break;
