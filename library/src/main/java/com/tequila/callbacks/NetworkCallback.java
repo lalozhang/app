@@ -32,7 +32,11 @@ public class NetworkCallback implements okhttp3.Callback{
     @Override
     public void onFailure(Call call, IOException e) {
         if(call!=null&&!call.isCanceled()){//没有被取消
-
+            if(mHandler!=null){
+                param.errorCode = ErrorCode.SERVER_ERROR;
+                Message msg = mHandler.obtainMessage(NetworkStatus.NET_ERROR, param);
+                mHandler.sendMessage(msg);
+            }
         }
     }
 
@@ -40,6 +44,7 @@ public class NetworkCallback implements okhttp3.Callback{
     public void onResponse(Call call, Response response) {
         try {
             if(call!=null&&!call.isCanceled()){//没有被取消
+
                 if(response.isSuccessful()){
                     ResponseBody responseBody = response.body();
                     if(responseBody!=null){
@@ -51,10 +56,12 @@ public class NetworkCallback implements okhttp3.Callback{
                             mHandler.sendMessage(msg);
                         }
 
+                        //TODO 将result添加到内存
                         if(param.memCache){//可以缓存到内存
 
                         }
 
+                        //TODO 将result添加到磁盘
                         if(param.diskCache){//可以缓存到磁盘
 
                         }
