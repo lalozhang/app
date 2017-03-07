@@ -8,6 +8,8 @@ import com.tequila.IServiceMap;
 import com.tequila.NetworkStatus;
 import com.tequila.RequestType;
 import com.tequila.cache.ResponseMemCache;
+import com.tequila.cache.disk.DiskLruCacheHelper;
+import com.tequila.cache.disk.ResponseDiskCache;
 import com.tequila.callbacks.NetworkCallback;
 import com.tequila.model.BaseParam;
 import com.tequila.model.BaseResult;
@@ -147,7 +149,7 @@ public class OkHttpManager {
             Iterator<NetworkTask> listSequenceIterator = listSequence.iterator();
             while (listSequenceIterator.hasNext()){
                 NetworkTask task = listSequenceIterator.next();
-                //TODO 如果有内存缓存
+
                 if(task.param.memCache&& ResponseMemCache.containsKey(task.param)){
                     BaseResult result = ResponseMemCache.get(task.param);
                     if(task.handler!=null&&result!=null){
@@ -156,9 +158,13 @@ public class OkHttpManager {
                         task.handler.sendMessage(msg);
                     }
                 }else{
-                    //TODO 如果diskCache 如果可以disk缓存且有缓存
-                    if(task.param.diskCache){
-
+                    if(task.param.diskCache&& ResponseDiskCache.containsKey(task.param)){
+                        BaseResult result = ResponseDiskCache.get(task.param);
+                        if(task.handler!=null&&result!=null){
+                            task.param.setResult(result);
+                            Message msg = task.handler.obtainMessage(NetworkStatus.CACHE_HIT, task.param);
+                            task.handler.sendMessage(msg);
+                        }
                     }
                     newCallByRequestType(task);
                 }

@@ -7,9 +7,9 @@ import java.io.Serializable;
  * Created by admin on 2017/3/4.
  */
 
-public class BaseParam implements Serializable{
+public class BaseParam implements Serializable {
 
-    public String hashKey(){
+    public String newCacheKey(){
         String cacheKey = null;
         try{
             cacheKey = JSONObject.toJSONString(this);
