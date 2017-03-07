@@ -31,7 +31,6 @@ import okhttp3.Response;
 class OkHttpManager {
 
     public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
-
     private OkHttpClient okHttpClient;
     private static volatile OkHttpManager singleInstance;
     private final LinkedList<NetworkTask> listSequence = new LinkedList<>();
@@ -47,8 +46,6 @@ class OkHttpManager {
                             Request newRequest = chain.request().newBuilder()
                                     .addHeader("X-Platform", "android")
                                     .addHeader("X-App-Id", "com.huapu.huafen")
-    //                                .addHeader("X-App-Version", CommonUtils.getAppVersionName())
-    //                                .addHeader("X-Dist-Channel", CommonUtils.getAppMetaData(MyApplication.getApplication(), "UMENG_CHANNEL"))
                                     .build();
                             return chain.proceed(newRequest);
                         } catch (IOException e) {
@@ -218,45 +215,52 @@ class OkHttpManager {
         while (itt.hasNext()){
             NetworkTask networkTask = itt.next();
             NetworkParam tmp = networkTask.param;
-            if(tmp.toString().equals(networkParam.toString())){
+            if(tmp.toString().equals(networkParam.toString())&&tmp.cancelAble){
                 itt.remove();
             }
         }
 
         List<Call> runningCalls = okHttpClient.dispatcher().runningCalls();
-        for (Call runCall:runningCalls){
-            if(runCall.request().tag() instanceof NetworkParam){
-                NetworkParam runParam = (NetworkParam) runCall.request().tag();
-                if(runParam.key == networkParam.key){
-                    runCall.cancel();
+        if(runningCalls!=null&&!runningCalls.isEmpty()){
+            for (Call runCall:runningCalls){
+                if(runCall.request().tag() instanceof NetworkParam){
+                    NetworkParam runParam = (NetworkParam) runCall.request().tag();
+                    if(runParam.key == networkParam.key&&runParam.cancelAble){
+                        runCall.cancel();
+                    }
                 }
             }
         }
 
         List<Call> queuedCalls = okHttpClient.dispatcher().queuedCalls();
-        for (Call queuedCall:queuedCalls){
-            if(queuedCall.request().tag() instanceof NetworkParam){
-                NetworkParam queuedParam = (NetworkParam) queuedCall.request().tag();
-                if(queuedParam.key == networkParam.key){
-                    queuedCall.cancel();
+        if(queuedCalls!=null&&!queuedCalls.isEmpty()){
+            for (Call queuedCall:queuedCalls){
+                if(queuedCall.request().tag() instanceof NetworkParam){
+                    NetworkParam queuedParam = (NetworkParam) queuedCall.request().tag();
+                    if(queuedParam.key == networkParam.key&&queuedParam.cancelAble){
+                        queuedCall.cancel();
+                    }
                 }
             }
         }
     }
 
-
-
     public void cancelAll(){
         listSequence.clear();
         List<Call> runningCalls = okHttpClient.dispatcher().runningCalls();
-        for (Call runCall:runningCalls){
-            runCall.cancel();
+        if(runningCalls!=null&&!runningCalls.isEmpty()){
+            for (Call runCall:runningCalls){
+                runCall.cancel();
+            }
         }
 
         List<Call> queuedCalls = okHttpClient.dispatcher().queuedCalls();
-        for (Call queuedCall:queuedCalls){
-            queuedCall.cancel();
+        if(queuedCalls!=null&&!queuedCalls.isEmpty()){
+            for (Call queuedCall:queuedCalls){
+                queuedCall.cancel();
+            }
         }
+
     }
 
     public void cancelWithHandler(Handler handler){
@@ -270,21 +274,26 @@ class OkHttpManager {
         }
 
         List<Call> runningCalls = okHttpClient.dispatcher().runningCalls();
-        for (Call runCall:runningCalls){
-            if(runCall instanceof NetworkCallback){
-                NetworkCallback var1 = (NetworkCallback) runCall;
-                if(var1.getHandler() == handler){
-                    runCall.cancel();
+        if(runningCalls!=null&&!runningCalls.isEmpty()){
+            for (Call runCall:runningCalls){
+                if(runCall instanceof NetworkCallback){
+                    NetworkCallback var1 = (NetworkCallback) runCall;
+                    if(var1.getHandler() == handler){
+                        runCall.cancel();
+                    }
                 }
             }
         }
 
+
         List<Call> queuedCalls = okHttpClient.dispatcher().queuedCalls();
-        for (Call queuedCall:queuedCalls){
-            if(queuedCall instanceof NetworkCallback){
-                NetworkCallback var2 = (NetworkCallback) queuedCall;
-                if(var2.getHandler() == handler){
-                    queuedCall.cancel();
+        if(queuedCalls!=null&&!queuedCalls.isEmpty()){
+            for (Call queuedCall:queuedCalls){
+                if(queuedCall instanceof NetworkCallback){
+                    NetworkCallback var2 = (NetworkCallback) queuedCall;
+                    if(var2.getHandler() == handler){
+                        queuedCall.cancel();
+                    }
                 }
             }
         }
