@@ -2,6 +2,8 @@ package com.tequila;
 
 import android.app.Application;
 import android.content.Context;
+
+import com.facebook.drawee.backends.pipeline.Fresco;
 import com.tequila.cache.disk.ResponseDiskCache;
 
 /**
@@ -17,6 +19,7 @@ public abstract class BaseApp extends Application{
         super.onCreate();
         appContext = this;
         ResponseDiskCache.initialize(this);
+        Fresco.initialize(this);
     }
 
     public static Context getContext(){
