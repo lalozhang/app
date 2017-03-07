@@ -2,7 +2,7 @@ package com.tequila.callbacks;
 
 import android.os.Handler;
 import android.os.Message;
-import com.tequila.NetworkStatus;
+import com.tequila.net.NetworkStatus;
 import com.tequila.net.NetworkParam;
 
 /**

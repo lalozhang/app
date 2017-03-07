@@ -9,8 +9,8 @@ import android.os.Handler;
 public class NetworkTask {
 
     public boolean cancel = false;
-    public final NetworkParam param;
-    public final Handler handler;
+    public NetworkParam param;
+    public Handler handler;
 
     public NetworkTask(NetworkParam p, Handler handler) {
         this.param = p;

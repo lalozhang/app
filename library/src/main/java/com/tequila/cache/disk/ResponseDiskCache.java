@@ -1,7 +1,6 @@
 package com.tequila.cache.disk;
 
 import android.content.Context;
-
 import com.tequila.Constant;
 import com.tequila.model.BaseResult;
 import com.tequila.net.NetworkParam;
@@ -31,7 +30,7 @@ public class ResponseDiskCache {
     public static BaseResult get(NetworkParam networkParam) {
         try {
             DiskLruCacheHelper diskLruCacheHelper = new DiskLruCacheHelper(mContext,"responseCache",50* Constant.MB);
-            Serializable obj = diskLruCacheHelper.getSerializable(networkParam.newCachKey());
+            Serializable obj = diskLruCacheHelper.getSerializable(networkParam.newCacheKey());
             if(obj instanceof BaseResult){
                 return (BaseResult)obj;
             }
@@ -46,7 +45,7 @@ public class ResponseDiskCache {
         try {
             DiskLruCacheHelper diskLruCacheHelper = new DiskLruCacheHelper(mContext,"responseCache",50* Constant.MB);
             if(networkParam!=null){
-                String key = networkParam.newCachKey();
+                String key = networkParam.newCacheKey();
                 diskLruCacheHelper.put(key,value);
             }
         }catch (Exception e){

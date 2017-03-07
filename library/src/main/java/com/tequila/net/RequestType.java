@@ -1,4 +1,4 @@
-package com.tequila;
+package com.tequila.net;
 
 /**
  * Created by admin on 2017/3/6.

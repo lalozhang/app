@@ -3,12 +3,7 @@ package com.tequila.net;
 import android.os.Handler;
 import android.os.Message;
 import com.alibaba.fastjson.JSONObject;
-import com.tequila.AddType;
-import com.tequila.IServiceMap;
-import com.tequila.NetworkStatus;
-import com.tequila.RequestType;
 import com.tequila.cache.ResponseMemCache;
-import com.tequila.cache.disk.DiskLruCacheHelper;
 import com.tequila.cache.disk.ResponseDiskCache;
 import com.tequila.callbacks.NetworkCallback;
 import com.tequila.model.BaseParam;
@@ -36,6 +31,7 @@ import okhttp3.Response;
 public class OkHttpManager {
 
     public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+
     private OkHttpClient okHttpClient;
     private static volatile OkHttpManager singleInstance;
     private final LinkedList<NetworkTask> listSequence = new LinkedList<>();
@@ -145,11 +141,13 @@ public class OkHttpManager {
     }
 
     private void tasksEnqueue(){
+
         synchronized (listSequence){
             Iterator<NetworkTask> listSequenceIterator = listSequence.iterator();
+
             while (listSequenceIterator.hasNext()){
                 NetworkTask task = listSequenceIterator.next();
-
+                listSequenceIterator.remove();
                 if(task.param.memCache&& ResponseMemCache.containsKey(task.param)){
                     BaseResult result = ResponseMemCache.get(task.param);
                     if(task.handler!=null&&result!=null){
@@ -168,8 +166,6 @@ public class OkHttpManager {
                     }
                     newCallByRequestType(task);
                 }
-
-                listSequenceIterator.remove();
             }
         }
     }
@@ -210,6 +206,8 @@ public class OkHttpManager {
             builder.post(requestBody);
         }else if(requestType == RequestType.GET){
             builder.get();
+        }else if(requestType == RequestType.PUT){
+
         }
 
         okHttpClient.newCall(builder.build()).enqueue(new NetworkCallback(networkParam,task.handler));

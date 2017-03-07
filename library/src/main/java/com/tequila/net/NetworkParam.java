@@ -1,11 +1,7 @@
 package com.tequila.net;
 
-import com.tequila.AddType;
-import com.tequila.IServiceMap;
-import com.tequila.cache.disk.Utils;
 import com.tequila.model.BaseParam;
 import com.tequila.model.BaseResult;
-import com.tequila.util.ErrorCode;
 
 /**
  * Created by admin on 2017/3/4.
@@ -76,7 +72,7 @@ public class NetworkParam {
         return result;
     }
 
-    public String newCachKey(){
+    public String newCacheKey(){
         return String.format("NetworkParam [key=%1s, cacheKey=%2s]", this.key, this.param.newCacheKey());
     }
 

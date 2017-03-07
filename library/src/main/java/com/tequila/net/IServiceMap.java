@@ -1,4 +1,4 @@
-package com.tequila;
+package com.tequila.net;
 
 import com.tequila.model.BaseResult;
 

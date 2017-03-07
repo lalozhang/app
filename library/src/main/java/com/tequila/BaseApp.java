@@ -9,7 +9,7 @@ import com.tequila.cache.disk.ResponseDiskCache;
  * Created by admin on 2017/3/7.
  */
 
-public class BaseApp extends Application{
+public abstract class BaseApp extends Application{
 
     private static Context appContext;
 
