@@ -1,9 +1,8 @@
 package com.tequila.net;
 
-import android.nfc.NfcEvent;
 import android.os.Handler;
-
 import com.tequila.model.BaseParam;
+import java.io.Serializable;
 
 /**
  * Created by lalo on 2017/3/7.
@@ -11,16 +10,30 @@ import com.tequila.model.BaseParam;
 
 public class Blues {
 
-    private final static FeatureBase[] DEFAULT_FEATURE = new FeatureBase[]{};
+    private final static FeatureBase[] DEFAULT_FEATURE = new FeatureBase[]{FeatureBase.CANCELABLE,FeatureBase.CANCEL_SAME};
 
 
-    public static void startRequest(IServiceMap key, BaseParam param,Handler handler,FeatureBase...featureBases){
-        NetworkParam networkParam = genNetworkParam(key,param,featureBases);
-
-
+    public static void startRequest(BaseParam param, IServiceMap key, Serializable extra,Handler handler, FeatureBase...featureBases){
+        NetworkParam networkParam = genNetworkParam(param,key,featureBases);
+        if(extra!=null){
+            networkParam.extra = extra;
+        }
+        OkHttpManager.getInstance().addTask(networkParam,handler);
     }
 
-    private static NetworkParam genNetworkParam(IServiceMap key, BaseParam param,FeatureBase...featureBases){
+    public static void startRequest(BaseParam param, IServiceMap key,Handler handler, FeatureBase...featureBases){
+        startRequest(param,key,null,handler,featureBases);
+    }
+
+    public static void startRequest(BaseParam param, IServiceMap key, Serializable extra,Handler handler){
+        startRequest(param,key,extra,handler,null);
+    }
+
+    public static void startRequest(BaseParam param, IServiceMap key,Handler handler){
+        startRequest(param,key,null,handler);
+    }
+
+    private static NetworkParam genNetworkParam(BaseParam param,IServiceMap key,FeatureBase...featureBases){
 
         if(featureBases==null||featureBases.length==0){
             featureBases=DEFAULT_FEATURE;
@@ -34,14 +47,16 @@ public class Blues {
                     featureBase == FeatureBase.INSERT_IN_ORDER){
                 networkParam.addType = featureBase.getCode();
             }else if(featureBase == FeatureBase.MEM_CACHE){
-
+                networkParam.memCache = true;
+            }else if(featureBase == FeatureBase.DISK_CACHE){
+                networkParam.diskCache = true;
+            }else if(featureBase == FeatureBase.CANCELABLE){
+                networkParam.cancelAble = true;
             }
         }
-        return null;
+        return networkParam;
 
     }
-
-
 
     public static void cancelWithHandler(Handler handler){
         OkHttpManager.getInstance().cancelWithHandler(handler);

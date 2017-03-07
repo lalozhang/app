@@ -3,6 +3,8 @@ package com.tequila.net;
 import com.tequila.model.BaseParam;
 import com.tequila.model.BaseResult;
 
+import java.io.Serializable;
+
 /**
  * Created by lalo on 2017/3/4.
  */
@@ -17,6 +19,9 @@ public class NetworkParam {
     public boolean memCache;//内存缓存
     public boolean diskCache;//sdCard缓存
     public int requestType;
+    public boolean cancelAble;
+    public Serializable extra;
+
 
     public NetworkParam(IServiceMap serviceMap, BaseParam param) {
         if(serviceMap==null){
