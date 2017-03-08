@@ -25,8 +25,11 @@ public class BaseFragment extends Fragment implements NetworkListener {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mHandler = new Handler(fcb = new HandlerCallbacks.FragmentCallback(this, genCallback()));
+        mBundle = savedInstanceState == null?getArguments():savedInstanceState;
+        if(mBundle==null){
+            mBundle = new Bundle();
+        }
 
-        mBundle = savedInstanceState == null?new Bundle():savedInstanceState;
 
     }
 
