@@ -5,17 +5,24 @@ import android.os.Message;
 import com.alibaba.fastjson.JSONObject;
 import com.tequila.cache.ResponseMemCache;
 import com.tequila.cache.disk.ResponseDiskCache;
+import com.tequila.callbacks.FileCallback;
 import com.tequila.callbacks.NetworkCallback;
 import com.tequila.model.BaseParam;
 import com.tequila.model.BaseResult;
+
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import okhttp3.Call;
+import okhttp3.Callback;
 import okhttp3.FormBody;
 import okhttp3.Interceptor;
 import okhttp3.MediaType;
@@ -306,5 +313,15 @@ class OkHttpManager {
         }
         singleInstance = null;
     }
+
+
+    public void downLoad(String url , FileCallback callback){
+        Request request = new Request.Builder().
+                url(url).
+                build();
+
+        okHttpClient.newCall(request).enqueue(callback);
+    }
+
 
 }
